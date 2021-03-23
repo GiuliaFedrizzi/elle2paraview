@@ -24,5 +24,5 @@ Note: ParaView Python scripts are very version-dependent. This script has been t
 3. To run *save-figure-from-csv.py* type ```pvpython save-figure-from-csv.py```.
 
 ## Using only *elle2csv.py* to convert to *csv*
-Follow the instructions on the [official documentation](https://www.paraview.org/Wiki/ParaView/Data_formats#CSV_.28Comma_Separated_Variable.29_files)
+Follow the instructions on the [official documentation](https://www.paraview.org/Wiki/ParaView/Data_formats#CSV_.28Comma_Separated_Variable.29_files) to load *csv* files into ParaView correctly.
 
