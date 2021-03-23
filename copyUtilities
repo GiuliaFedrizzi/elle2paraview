@@ -1,0 +1,4 @@
+targetDir=../myExp4
+cp clearAll $targetDir
+cp conversion.py $targetDir
+cp runMe $targetDir 

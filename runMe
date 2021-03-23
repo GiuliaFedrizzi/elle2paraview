@@ -1,0 +1,6 @@
+#!/bin/bash
+cp ../../elle/processes/latte/experiment.cc . 
+../../elle/binwx/elle_latte -i res200.elle -n -u 27 -s 40 -f 1
+
+# -f x : to save every x steps
+# -n   : to run with no user interface

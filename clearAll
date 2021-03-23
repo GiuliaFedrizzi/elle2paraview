@@ -1,0 +1,2 @@
+rm my_exp*
+rm *.csv
