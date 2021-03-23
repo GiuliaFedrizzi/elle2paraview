@@ -1,3 +1,9 @@
+"""
+Import csv file converted from an elle file, apply 'Table To Points', save figure.
+
+Giulia Fedrizzi, March 2021
+"""
+
 #### import the simple module from the paraview
 from paraview.simple import *
 import glob 
