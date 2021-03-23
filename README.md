@@ -1,7 +1,7 @@
 # elle2paraview
 ## About the files
 
-*elle2paraview* is a set of scripts that makes it possible to open *.elle* files in ParaView and save figures. It does so by converting them to *.csv* files.
+*elle2paraview* is a set of scripts that makes it possible to open [*.elle* files](http://elle.ws/) in ParaView and save figures. It does so by converting them to *.csv* files.
 
  
  * *elle2csv.py*  looks for .elle files in the current directory and extracts `UNODES` coordinates, `FRACTURES` and `TEMPERATURE` (renamed as *pressure*). It saves all these in a .csv file with the same name as the original .elle file. More sections will be added soon.
