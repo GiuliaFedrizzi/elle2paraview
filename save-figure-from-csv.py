@@ -1,6 +1,7 @@
 """
 Import csv file converted from an elle file, apply 'Table To Points', save figure.
 
+This script was mostly generated with the "trace" tool in ParaView (Tools > Start Trace)
 Giulia Fedrizzi, March 2021
 """
 
@@ -20,19 +21,8 @@ for file_to_convert in glob.glob("*.csv"):
     convertedcsv.FieldDelimiterCharacters = ','
     convertedcsv.MergeConsecutiveDelimiters = 0
 
-    # Create a new 'SpreadSheet View'
+    # # Create a new 'SpreadSheet View'
     spreadSheetView1 = CreateView('SpreadSheetView')
-    spreadSheetView1.UseCache = 0
-    spreadSheetView1.ViewSize = [400, 400]
-    spreadSheetView1.CellFontSize = 9
-    spreadSheetView1.HeaderFontSize = 9
-    spreadSheetView1.SelectionOnly = 0
-    spreadSheetView1.GenerateCellConnectivity = 0
-    spreadSheetView1.ColumnToSort = ''
-    spreadSheetView1.SelectedComponent = -1
-    spreadSheetView1.InvertOrder = 0
-    spreadSheetView1.BlockSize = 1024L
-    spreadSheetView1.ColumnVisibility = []
 
     # get layout
     layout1 = GetLayout()
@@ -55,8 +45,6 @@ for file_to_convert in glob.glob("*.csv"):
     tableToPoints1Display.FieldAssociation = 'Point Data'
     tableToPoints1Display.CompositeDataSetIndex = [0]
 
-    # hide data in view
-    Hide(convertedcsv, spreadSheetView1)
 
     # update the view to ensure updated data information
     spreadSheetView1.Update()
@@ -64,9 +52,6 @@ for file_to_convert in glob.glob("*.csv"):
     # destroy spreadSheetView1
     Delete(spreadSheetView1)
     del spreadSheetView1
-
-    # close an empty frame
-    #layout1.Collapse(2)     # .--------------------------THIS-----------
 
     # set active view
     SetActiveView(renderView1)
@@ -317,92 +302,97 @@ for file_to_convert in glob.glob("*.csv"):
     # reset view to fit data
     renderView1.ResetCamera()
 
+    # set the view size: (important so that the colorbar has a reasonable size)
+    renderView1.ViewSize=[971, 528]
+
     # set scalar coloring
     ColorBy(tableToPoints1Display, ('POINTS', 'Fractures'))
 
     # rescale color and/or opacity maps used to include current data range
     tableToPoints1Display.RescaleTransferFunctionToDataRange(True, False)
 
-    # show color bar/color legend
-    tableToPoints1Display.SetScalarBarVisibility(renderView1, True)
+    # No legend for fractures:
+    # # show color bar/color legend
+    # tableToPoints1Display.SetScalarBarVisibility(renderView1, True)
 
-    # get color transfer function/color map for 'Fractures'
-    fracturesLUT = GetColorTransferFunction('Fractures')
-    fracturesLUT.LockDataRange = 0
-    fracturesLUT.InterpretValuesAsCategories = 0
-    fracturesLUT.ShowCategoricalColorsinDataRangeOnly = 0
-    fracturesLUT.RescaleOnVisibilityChange = 0
-    fracturesLUT.EnableOpacityMapping = 0
-    fracturesLUT.RGBPoints = [-1.0, 0.231373, 0.298039, 0.752941, -0.5, 0.865003, 0.865003, 0.865003, 0.0, 0.705882, 0.0156863, 0.14902]
-    fracturesLUT.UseLogScale = 0
-    fracturesLUT.ColorSpace = 'Diverging'
-    fracturesLUT.UseBelowRangeColor = 0
-    fracturesLUT.BelowRangeColor = [0.0, 0.0, 0.0]
-    fracturesLUT.UseAboveRangeColor = 0
-    fracturesLUT.AboveRangeColor = [1.0, 1.0, 1.0]
-    fracturesLUT.NanColor = [1.0, 1.0, 0.0]
-    fracturesLUT.Discretize = 1
-    fracturesLUT.NumberOfTableValues = 256
-    fracturesLUT.ScalarRangeInitialized = 1.0
-    fracturesLUT.HSVWrap = 0
-    fracturesLUT.VectorComponent = 0
-    fracturesLUT.VectorMode = 'Magnitude'
-    fracturesLUT.AllowDuplicateScalars = 1
-    fracturesLUT.Annotations = []
-    fracturesLUT.ActiveAnnotatedValues = []
-    fracturesLUT.IndexedColors = []
+    # # get color transfer function/color map for 'Fractures'
+    # fracturesLUT = GetColorTransferFunction('Fractures')
+    # fracturesLUT.LockDataRange = 0
+    # fracturesLUT.InterpretValuesAsCategories = 0
+    # fracturesLUT.ShowCategoricalColorsinDataRangeOnly = 0
+    # fracturesLUT.RescaleOnVisibilityChange = 0
+    # fracturesLUT.EnableOpacityMapping = 0
+    # fracturesLUT.RGBPoints = [-1.0, 0.231373, 0.298039, 0.752941, -0.5, 0.865003, 0.865003, 0.865003, 0.0, 0.705882, 0.0156863, 0.14902]
+    # fracturesLUT.UseLogScale = 0
+    # fracturesLUT.ColorSpace = 'Diverging'
+    # fracturesLUT.UseBelowRangeColor = 0
+    # fracturesLUT.BelowRangeColor = [0.0, 0.0, 0.0]
+    # fracturesLUT.UseAboveRangeColor = 0
+    # fracturesLUT.AboveRangeColor = [1.0, 1.0, 1.0]
+    # fracturesLUT.NanColor = [1.0, 1.0, 0.0]
+    # fracturesLUT.Discretize = 1
+    # fracturesLUT.NumberOfTableValues = 256
+    # fracturesLUT.ScalarRangeInitialized = 1.0
+    # fracturesLUT.HSVWrap = 0
+    # fracturesLUT.VectorComponent = 0
+    # fracturesLUT.VectorMode = 'Magnitude'
+    # fracturesLUT.AllowDuplicateScalars = 1
+    # fracturesLUT.Annotations = []
+    # fracturesLUT.ActiveAnnotatedValues = []
+    # fracturesLUT.IndexedColors = []
 
-    # Properties modified on renderView1
+    # # Properties modified on renderView1
     renderView1.Background = [1.0, 1.0, 1.0]
 
-    # get color legend/bar for fracturesLUT in view renderView1
-    fracturesLUTColorBar = GetScalarBar(fracturesLUT, renderView1)
-    fracturesLUTColorBar.AutoOrient = 1
-    fracturesLUTColorBar.Orientation = 'Vertical'
-    fracturesLUTColorBar.WindowLocation = 'LowerRightCorner'
-    fracturesLUTColorBar.Position = [0.89, 0.02]
-    fracturesLUTColorBar.Title = 'Fractures'
-    fracturesLUTColorBar.ComponentTitle = ''
-    fracturesLUTColorBar.TitleJustification = 'Centered'
-    fracturesLUTColorBar.TitleColor = [1.0, 1.0, 1.0]
-    fracturesLUTColorBar.TitleOpacity = 1.0
-    fracturesLUTColorBar.TitleFontFamily = 'Arial'
-    fracturesLUTColorBar.TitleBold = 0
-    fracturesLUTColorBar.TitleItalic = 0
-    fracturesLUTColorBar.TitleShadow = 0
-    fracturesLUTColorBar.TitleFontSize = 16
-    fracturesLUTColorBar.LabelColor = [1.0, 1.0, 1.0]
-    fracturesLUTColorBar.LabelOpacity = 1.0
-    fracturesLUTColorBar.LabelFontFamily = 'Arial'
-    fracturesLUTColorBar.LabelBold = 0
-    fracturesLUTColorBar.LabelItalic = 0
-    fracturesLUTColorBar.LabelShadow = 0
-    fracturesLUTColorBar.LabelFontSize = 16
-    fracturesLUTColorBar.AutomaticLabelFormat = 1
-    fracturesLUTColorBar.LabelFormat = '%-#6.3g'
-    fracturesLUTColorBar.DrawTickMarks = 1
-    fracturesLUTColorBar.DrawTickLabels = 1
-    fracturesLUTColorBar.UseCustomLabels = 0
-    fracturesLUTColorBar.CustomLabels = []
-    fracturesLUTColorBar.AddRangeLabels = 1
-    fracturesLUTColorBar.RangeLabelFormat = '%-#6.1e'
-    fracturesLUTColorBar.DrawAnnotations = 1
-    fracturesLUTColorBar.AddRangeAnnotations = 0
-    fracturesLUTColorBar.AutomaticAnnotations = 0
-    fracturesLUTColorBar.DrawNanAnnotation = 0
-    fracturesLUTColorBar.NanAnnotation = 'NaN'
-    fracturesLUTColorBar.TextPosition = 'Ticks right/top, annotations left/bottom'
-    fracturesLUTColorBar.ScalarBarThickness = 16
-    fracturesLUTColorBar.ScalarBarLength = 0.33
+    # # get color legend/bar for fracturesLUT in view renderView1
+    # fracturesLUTColorBar = GetScalarBar(fracturesLUT, renderView1)
+    # fracturesLUTColorBar.AutoOrient = 1
+    # fracturesLUTColorBar.Orientation = 'Vertical'
+    # fracturesLUTColorBar.WindowLocation = 'LowerRightCorner'
+    # fracturesLUTColorBar.Position = [0.89, 0.02]
+    # fracturesLUTColorBar.Title = 'Fractures'
+    # fracturesLUTColorBar.ComponentTitle = ''
+    # fracturesLUTColorBar.TitleJustification = 'Centered'
+    # fracturesLUTColorBar.TitleColor = [1.0, 1.0, 1.0]
+    # fracturesLUTColorBar.TitleOpacity = 1.0
+    # fracturesLUTColorBar.TitleFontFamily = 'Arial'
+    # fracturesLUTColorBar.TitleBold = 0
+    # fracturesLUTColorBar.TitleItalic = 0
+    # fracturesLUTColorBar.TitleShadow = 0
+    # fracturesLUTColorBar.TitleFontSize = 16
+    # fracturesLUTColorBar.LabelColor = [1.0, 1.0, 1.0]
+    # fracturesLUTColorBar.LabelOpacity = 1.0
+    # fracturesLUTColorBar.LabelFontFamily = 'Arial'
+    # fracturesLUTColorBar.LabelBold = 0
+    # fracturesLUTColorBar.LabelItalic = 0
+    # fracturesLUTColorBar.LabelShadow = 0
+    # fracturesLUTColorBar.LabelFontSize = 16
+    # fracturesLUTColorBar.AutomaticLabelFormat = 1
+    # fracturesLUTColorBar.LabelFormat = '%-#6.3g'
+    # fracturesLUTColorBar.DrawTickMarks = 1
+    # fracturesLUTColorBar.DrawTickLabels = 1
+    # fracturesLUTColorBar.UseCustomLabels = 0
+    # fracturesLUTColorBar.CustomLabels = []
+    # fracturesLUTColorBar.AddRangeLabels = 1
+    # fracturesLUTColorBar.RangeLabelFormat = '%-#6.1e'
+    # fracturesLUTColorBar.DrawAnnotations = 1
+    # fracturesLUTColorBar.AddRangeAnnotations = 0
+    # fracturesLUTColorBar.AutomaticAnnotations = 0
+    # fracturesLUTColorBar.DrawNanAnnotation = 0
+    # fracturesLUTColorBar.NanAnnotation = 'NaN'
+    # fracturesLUTColorBar.TextPosition = 'Ticks right/top, annotations left/bottom'
+    # fracturesLUTColorBar.ScalarBarThickness = 16
+    # fracturesLUTColorBar.ScalarBarLength = 0.33
 
-    # Properties modified on fracturesLUTColorBar
-    fracturesLUTColorBar.TitleColor = [0.0, 0.0, 0.0]
-    fracturesLUTColorBar.LabelColor = [0.0, 0.0, 0.0]
+    # # Properties modified on fracturesLUTColorBar
+    # fracturesLUTColorBar.TitleColor = [0.0, 0.0, 0.0]
+    # fracturesLUTColorBar.LabelColor = [0.0, 0.0, 0.0]
 
-    # change scalar bar placement
-    fracturesLUTColorBar.WindowLocation = 'AnyLocation'
-    fracturesLUTColorBar.Position = [0.8032955715756951, 0.3446969696969697]
-    fracturesLUTColorBar.ScalarBarLength = 0.32999999999999974
+    # # change scalar bar placement
+    # fracturesLUTColorBar.WindowLocation = 'AnyLocation'
+    # fracturesLUTColorBar.Position = [0.8032955715756951, 0.3446969696969697]
+    # fracturesLUTColorBar.ScalarBarLength = 0.32999999999999974
+
 
     # current camera placement for renderView1
     renderView1.InteractionMode = '2D'
@@ -417,6 +407,14 @@ for file_to_convert in glob.glob("*.csv"):
         StereoMode='No change',
         TransparentBackground=0,
         ImageQuality=100)
+        
+    # hide color bar/color legend
+    # tableToPoints1Display.SetScalarBarVisibility(renderView1, False)
+
+
+    '''
+    ========== END OF FRACTURES, START OF PRESSURE ===========
+    '''
 
     #### saving camera placements for all active views
 
@@ -425,6 +423,49 @@ for file_to_convert in glob.glob("*.csv"):
     renderView1.CameraPosition = [0.5, 0.4999802879, 2.731996953640956]
     renderView1.CameraFocalPoint = [0.5, 0.4999802879, 0.0]
     renderView1.CameraParallelScale = 0.7070928427643479
+
+    # set scalar coloring
+    ColorBy(tableToPoints1Display, ('POINTS', 'Pressure'))
+
+    # rescale color and/or opacity maps used to include current data range
+    tableToPoints1Display.RescaleTransferFunctionToDataRange(True, False)
+
+    # show color bar/color legend
+    tableToPoints1Display.SetScalarBarVisibility(renderView1, True)
+
+    # get color transfer function/color map for 'Pressure'
+    pressureLUT = GetColorTransferFunction('Pressure')
+    pressureLUT.RGBPoints = [9800000.0, 0.231373, 0.298039, 0.752941, 36237328.25, 0.865003, 0.865003, 0.865003, 62674656.5, 0.705882, 0.0156863, 0.14902]
+    pressureLUT.ScalarRangeInitialized = 1.0
+    # get color legend/bar for pressureLUT in view renderView1
+    pressureLUTColorBar = GetScalarBar(pressureLUT, renderView1)
+    pressureLUTColorBar.WindowLocation = 'AnyLocation'
+    pressureLUTColorBar.Position = [0.8403707518022657, 0.10037878787878785]
+    pressureLUTColorBar.Title = 'Pressure'
+    pressureLUTColorBar.ComponentTitle = ''
+    pressureLUTColorBar.TitleColor = [0.0, 0.0, 0.0]
+    pressureLUTColorBar.LabelColor = [0.0, 0.0, 0.0]
+    pressureLUTColorBar.ScalarBarLength = 0.3300000000000001
+
+    # change scalar bar placement
+    pressureLUTColorBar.Position = [0.761071060762101, 0.3181818181818182]
+    pressureLUTColorBar.ScalarBarLength = 0.33000000000000046
+
+    #### saving camera placements for all active views
+
+    # current camera placement for renderView1
+    renderView1.InteractionMode = '2D'
+    renderView1.CameraPosition = [0.49875, 0.496315801, 10000.0]
+    renderView1.CameraFocalPoint = [0.49875, 0.496315801, 0.0]
+    renderView1.CameraParallelScale = 0.7020994664762287
+
+    # save screenshot
+    SaveScreenshot(converted_file_name+'-Pressure.png', renderView1, ImageResolution=[971, 528],
+        FontScaling='Scale fonts proportionally',
+        OverrideColorPalette='',
+        StereoMode='No change',
+        TransparentBackground=0,
+        ImageQuality=100)    
 
     #### uncomment the following to render all views
     # RenderAllViews()
