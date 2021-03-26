@@ -1,9 +1,6 @@
 """
 Converting elle files to csv to be read in paraview
 Giulia Fedrizzi, February-March 2021
-TO DO: 
- 
-let the user decide what to save
 """
 import sys
 import os
@@ -53,11 +50,11 @@ for file_to_convert in glob.glob("*.elle"):  # find files with elle extension in
 
     print("Converting "+str(file_to_convert)) # letting know which file is being opened
 
-    complete_list_of_things_to_search=["LOCATION","UNODES","CONC_A","U_FRACTURES","U_PHASE","U_TEMPERATURE","U_DIF_STRESS","U_MEAN_STRESS","U_DENSITY","U_YOUNGSMODULUS","U_ENERGY"]
+    complete_list_of_things_to_search=["LOCATION","UNODES","CONC_A","U_FRACTURES","U_PHASE","U_TEMPERATURE","U_DIF_STRESS","U_MEAN_STRESS","U_DENSITY","U_YOUNGSMODULUS","U_ENERGY","U_DISLOCDEN","U_VISCOSITY","U_ATTRIB_A"]
     # what I need to find in the elle file: every couple is the start and the end of the section I need to save. 
     #e.g. from "UNODES" to "CONC_A" means I am going to save all the lines after "LOCATION" until "CONC_A".
     for ind,section in enumerate(complete_list_of_things_to_search):   # ind is the index, section is the name of the section (e.g. "LOCATION")
-        if section in ["UNODES", "U_FRACTURES", "U_TEMPERATURE"]:        # sections we want to save
+        if section in ["UNODES", "U_FRACTURES", "U_TEMPERATURE","U_YOUNGSMODULUS","U_DISLOCDEN"]:        # sections we want to save
             things_to_search=complete_list_of_things_to_search[ind:ind+2]  # search for this section and the next (start and stop of the search process)
             lines_list=[] # initialising some useful variables
             for x in things_to_search:    # now things_to_search changes every time with every 'section'
@@ -68,7 +65,7 @@ for file_to_convert in glob.glob("*.elle"):  # find files with elle extension in
             line_number=lines_list[0]   # line where to start
             lines_to_write=[]
             save_the_right_lines(file_to_convert) # run function
-
+            # Create a dataframe for each section, assign the correct header and merge it with the previous one
             if section == "UNODES":     # needs to assign headers: x,y,z
                 myDf = pd.read_csv(converted_file_name+".txt",delim_whitespace=True,header=None) # create pandas dataframe
                 myDf.columns = ["id","x coord", "y coord"] # assign headers
@@ -87,8 +84,23 @@ for file_to_convert in glob.glob("*.elle"):  # find files with elle extension in
                 pressDf.drop(pressDf.index[[0]],inplace=True) # drop the first row (that says "default = 0")
                 pressDf.columns = ["id","Pressure"] # assign headers
                 #pressDf.to_csv('pressDf.csv',index=False)   # save a .csv to check
-                pressDf["id"]=pressDf["id"].astype('int64',copy=True,errors='raise')
-                mergedDf = mergedDf.merge(pressDf,how="left",left_on="id",right_on="id")
+                pressDf["id"]=pressDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
+                mergedDf = mergedDf.merge(pressDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
+            if section == "U_YOUNGSMODULUS":
+                youngsDf = pd.read_csv(converted_file_name+".txt",delim_whitespace=True,header=None)
+                youngsDf.drop(youngsDf.index[[0]],inplace=True) # drop the first row (that says "default = 0")
+                youngsDf.columns = ["id","Young's Modulus"] # assign headers
+                #pressDf.to_csv('pressDf.csv',index=False)   # save a .csv to check
+                youngsDf["id"]=youngsDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
+                mergedDf = mergedDf.merge(youngsDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
+            if section == "U_DISLOCDEN":  # = porosity
+                poroDf = pd.read_csv(converted_file_name+".txt",delim_whitespace=True,header=None)
+                poroDf.drop(poroDf.index[[0]],inplace=True) # drop the first row (that says "default = 0")
+                poroDf.columns = ["id","Porosity"] # assign headers
+                #pressDf.to_csv('pressDf.csv',index=False)   # save a .csv to check
+                poroDf["id"]=poroDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
+                mergedDf = mergedDf.merge(poroDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
+            
 
         if ind==len(complete_list_of_things_to_search)-1:  # if we reached the last thing to search: stop. Don't search anymore.
             break
