@@ -311,7 +311,7 @@ for file_to_convert in glob.glob("*.csv"):
     # rescale color and/or opacity maps used to include current data range
     tableToPoints1Display.RescaleTransferFunctionToDataRange(True, False)
 
-    # No legend for fractures:
+    # No legend for fractures. Uncomment the following to show legend.
     # # show color bar/color legend
     # tableToPoints1Display.SetScalarBarVisibility(renderView1, True)
 
@@ -407,7 +407,7 @@ for file_to_convert in glob.glob("*.csv"):
         StereoMode='No change',
         TransparentBackground=0,
         ImageQuality=100)
-        
+
     # hide color bar/color legend
     # tableToPoints1Display.SetScalarBarVisibility(renderView1, False)
 
@@ -466,7 +466,64 @@ for file_to_convert in glob.glob("*.csv"):
         StereoMode='No change',
         TransparentBackground=0,
         ImageQuality=100)    
+    '''
+    ========== END OF PRESSURE, START OF POROSITY ===========
+    '''
+    #### saving camera placements for all active views
 
+    # current camera placement for renderView1
+    renderView1.InteractionMode = '2D'
+    renderView1.CameraPosition = [0.5, 0.4999802879, 2.731996953640956]
+    renderView1.CameraFocalPoint = [0.5, 0.4999802879, 0.0]
+    renderView1.CameraParallelScale = 0.7070928427643479
+
+    # set scalar coloring
+    ColorBy(tableToPoints1Display, ('POINTS', 'Porosity'))
+
+
+    # Hide the scalar bar for this color map if no visible data is colored by it.
+    HideScalarBarIfNotNeeded(pressureLUT, renderView1)
+
+    # rescale color and/or opacity maps used to include current data range
+    tableToPoints1Display.RescaleTransferFunctionToDataRange(True, False)
+
+    # show color bar/color legend
+    tableToPoints1Display.SetScalarBarVisibility(renderView1, True)
+
+    # get color transfer function/color map for 'Porosity'
+    porosityLUT = GetColorTransferFunction('Porosity')
+    porosityLUT.RGBPoints = [0.08999329060000001, 0.231373, 0.298039, 0.752941, 0.23440400979999998, 0.865003, 0.865003, 0.865003, 0.37881472899999996, 0.705882, 0.0156863, 0.14902]
+    porosityLUT.ScalarRangeInitialized = 1.0
+
+    # get color legend/bar for porosityLUT in view renderView1
+    porosityLUTColorBar = GetScalarBar(porosityLUT, renderView1)
+    porosityLUTColorBar.WindowLocation = 'AnyLocation'
+    porosityLUTColorBar.Position = [0.8403707518022657, 0.10037878787878785]
+    porosityLUTColorBar.Title = 'Porosity'
+    porosityLUTColorBar.ComponentTitle = ''
+    porosityLUTColorBar.TitleColor = [0.0, 0.0, 0.0]
+    porosityLUTColorBar.LabelColor = [0.0, 0.0, 0.0]
+    porosityLUTColorBar.ScalarBarLength = 0.3300000000000001
+
+    # change scalar bar placement
+    porosityLUTColorBar.Position = [0.761071060762101, 0.3181818181818182]
+    pressureLUTColorBar.ScalarBarLength = 0.33000000000000046
+
+    #### saving camera placements for all active views
+
+    # current camera placement for renderView1
+    renderView1.InteractionMode = '2D'
+    renderView1.CameraPosition = [0.49875, 0.496315801, 2.712704029172661]
+    renderView1.CameraFocalPoint = [0.49875, 0.496315801, 0.0]
+    renderView1.CameraParallelScale = 0.7020994664762287
+
+    # save screenshot
+    SaveScreenshot(converted_file_name+'-Porosity.png', renderView1, ImageResolution=[971, 528],
+        FontScaling='Scale fonts proportionally',
+        OverrideColorPalette='',
+        StereoMode='No change',
+        TransparentBackground=0,
+        ImageQuality=100)    
     #### uncomment the following to render all views
     # RenderAllViews()
     # alternatively, if you want to write images, you can use SaveScreenshot(...).
