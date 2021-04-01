@@ -38,8 +38,8 @@ def save_the_right_lines(file_name):
 """
 Big loop over every elle file in the current directory:
 """
-for file_to_convert in glob.glob("*.elle"):  # find files with elle extension in the current folder, EXCLUDE those that start with "res"
-    if file_to_convert.startswith("res"):
+for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle extension in the current folder, sorted by name
+    if file_to_convert.startswith("res"): # EXCLUDE those that start with "res"
         continue
     converted_file_name=file_to_convert.replace(".elle","") # extract the name without file extension
     # TEST: are the files already converted?
@@ -100,6 +100,19 @@ for file_to_convert in glob.glob("*.elle"):  # find files with elle extension in
                 #pressDf.to_csv('pressDf.csv',index=False)   # save a .csv to check
                 poroDf["id"]=poroDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
                 mergedDf = mergedDf.merge(poroDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
+
+                # difference in porosity
+                only_letters= ""  # initialise string, will save letters from name of files (no numbers)
+                for char in converted_file_name:
+                    if char.isnumeric()==False:  # if the character is not a number (letter or symbol):
+                        only_letters += char   # save it
+                first_file = only_letters+"003.csv"   # that's the name of the file I'll use for comparison = initial porosity. 001 and 002 do not have porosity (initialising simulation)
+                if os.path.isfile(first_file):
+                    poroDiffDf = pd.read_csv(first_file,delimiter=',',usecols=["id","Porosity"])  # get the porosity values
+                    poroDiffDf["Porosity"] = poroDf["Porosity"] - poroDiffDf["Porosity"] # dataframe with difference in porosity from initial porosity distribution
+                    poroDiffDf.columns = ["id","Porosity Variation"]  # rename column from Porosity to Porosity Variation
+                    mergedDf = mergedDf.merge(poroDiffDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
+                
             
 
         if ind==len(complete_list_of_things_to_search)-1:  # if we reached the last thing to search: stop. Don't search anymore.
