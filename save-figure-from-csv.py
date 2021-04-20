@@ -8,6 +8,7 @@ Giulia Fedrizzi, March 2021
 #### import the simple module from the paraview
 from paraview.simple import *
 import glob 
+import os
 #### disable automatic camera reset on 'Show'
 paraview.simple._DisableFirstRenderCameraReset()
 
@@ -15,6 +16,9 @@ for file_to_convert in glob.glob("*.csv"):
     converted_file_name=file_to_convert.replace(".csv","") # extract the name without file extension
     # create a new 'CSV Reader'
     convertedcsv = CSVReader(FileName=file_to_convert)
+    if os.path.isfile('Fractures-'+converted_file_name+'.png') and os.path.isfile('Pressure-'+converted_file_name+'.png') and  os.path.isfile('Porosity'+converted_file_name+'.png'):
+        print "Files already exist."
+        continue
     convertedcsv.DetectNumericColumns = 1
     convertedcsv.UseStringDelimiter = 1
     convertedcsv.HaveHeaders = 1
@@ -401,7 +405,7 @@ for file_to_convert in glob.glob("*.csv"):
     renderView1.CameraParallelScale = 0.7070928427643479
 
     # save screenshot
-    SaveScreenshot(converted_file_name+'-Fractures.png', renderView1, ImageResolution=[971, 528],
+    SaveScreenshot('Fractures-'+converted_file_name+'.png', renderView1, ImageResolution=[971, 528],
         FontScaling='Scale fonts proportionally',
         OverrideColorPalette='',
         StereoMode='No change',
@@ -460,7 +464,7 @@ for file_to_convert in glob.glob("*.csv"):
     renderView1.CameraParallelScale = 0.7020994664762287
 
     # save screenshot
-    SaveScreenshot(converted_file_name+'-Pressure.png', renderView1, ImageResolution=[971, 528],
+    SaveScreenshot('Pressure-'+converted_file_name+'.png', renderView1, ImageResolution=[971, 528],
         FontScaling='Scale fonts proportionally',
         OverrideColorPalette='',
         StereoMode='No change',
@@ -518,12 +522,14 @@ for file_to_convert in glob.glob("*.csv"):
     renderView1.CameraParallelScale = 0.7020994664762287
 
     # save screenshot
-    SaveScreenshot(converted_file_name+'-Porosity.png', renderView1, ImageResolution=[971, 528],
+    SaveScreenshot('Porosity'+converted_file_name+'.png', renderView1, ImageResolution=[971, 528],
         FontScaling='Scale fonts proportionally',
         OverrideColorPalette='',
         StereoMode='No change',
         TransparentBackground=0,
-        ImageQuality=100)    
+        ImageQuality=100)
+  # hide color bar/color legend
+    tableToPoints1Display.SetScalarBarVisibility(renderView1, False)  
     #### uncomment the following to render all views
     # RenderAllViews()
     # alternatively, if you want to write images, you can use SaveScreenshot(...).
