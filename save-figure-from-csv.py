@@ -49,20 +49,6 @@ for file_to_convert in glob.glob("*.csv"):
     tableToPoints1Display.FieldAssociation = 'Point Data'
     tableToPoints1Display.CompositeDataSetIndex = [0]
 
-
-    # update the view to ensure updated data information
-    spreadSheetView1.Update()
-
-    # destroy spreadSheetView1
-    Delete(spreadSheetView1)
-    del spreadSheetView1
-
-    # set active view
-    SetActiveView(renderView1)
-
-    # set active source
-    SetActiveSource(tableToPoints1)
-
     # show data in view
     tableToPoints1Display = Show(tableToPoints1, renderView1)
     # trace defaults for the display properties.
