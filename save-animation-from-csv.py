@@ -11,7 +11,7 @@ paraview.simple._DisableFirstRenderCameraReset()
  #FileName=['/home/ubuntu/elle-daniel/myExperiments/testDir/my_experiment034.csv', 
  #'/home/ubuntu/elle-daniel/myExperiments/testDir/my_experiment035.csv', 
  #'/home/ubuntu/elle-daniel/myExperiments/testDir/my_experiment036.csv'])
-
+FileName=glob.glob("*.csv")
 my_experiment02 = CSVReader(registrationName='*', FileName=glob.glob("*.csv"))
 my_experiment02.DetectNumericColumns = 1
 my_experiment02.UseStringDelimiter = 1
@@ -508,13 +508,13 @@ renderView1.CameraFocalPoint = [0.49875, 0.496315801, 0.0]
 renderView1.CameraParallelScale = 0.7020994664762287
 
 # save animation
-SaveAnimation('/home/ubuntu/elle-daniel/myExperiments/testDir/fractures.png', renderView1, ImageResolution=[972, 528],
+SaveAnimation('fractures.png', renderView1, ImageResolution=[972, 528],
     FontScaling='Scale fonts proportionally',
     OverrideColorPalette='',
     StereoMode='No change',
     TransparentBackground=0,
     FrameRate=1,
-    FrameWindow=[0, 2], 
+    FrameWindow=[0, len(FileName)], 
     # PNG options
     CompressionLevel='5',
     SuffixFormat='.%04d')
@@ -628,13 +628,13 @@ renderView1.CameraFocalPoint = [0.49875, 0.496315801, 0.0]
 renderView1.CameraParallelScale = 0.7020994664762287
 
 # save animation
-SaveAnimation('/home/ubuntu/elle-daniel/myExperiments/testDir/porosity-variation.png', renderView1, ImageResolution=[972, 528],
+SaveAnimation('porosity-variation.png', renderView1, ImageResolution=[972, 528],
     FontScaling='Scale fonts proportionally',
     OverrideColorPalette='',
     StereoMode='No change',
     TransparentBackground=0,
     FrameRate=1,
-    FrameWindow=[0, 2], 
+    FrameWindow=[0, len(FileName)], 
     # PNG options
     CompressionLevel='5',
     SuffixFormat='.%04d')
@@ -748,13 +748,13 @@ renderView1.CameraFocalPoint = [0.49875, 0.496315801, 0.0]
 renderView1.CameraParallelScale = 0.7020994664762287
 
 # save animation
-SaveAnimation('/home/ubuntu/elle-daniel/myExperiments/testDir/pressure.png', renderView1, ImageResolution=[972, 528],
+SaveAnimation('pressure.png', renderView1, ImageResolution=[972, 528],
     FontScaling='Scale fonts proportionally',
     OverrideColorPalette='',
     StereoMode='No change',
     TransparentBackground=0,
     FrameRate=1,
-    FrameWindow=[0, 2], 
+    FrameWindow=[0, len(FileName)], 
     # PNG options
     CompressionLevel='5',
     SuffixFormat='.%04d')
