@@ -113,7 +113,6 @@ for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle exte
                     poroDiffDf.columns = ["id","Porosity Variation"]  # rename column from Porosity to Porosity Variation
                     mergedDf = mergedDf.merge(poroDiffDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
                 
-            
 
         if ind==len(complete_list_of_things_to_search)-1:  # if we reached the last thing to search: stop. Don't search anymore.
             break

@@ -11,8 +11,8 @@ paraview.simple._DisableFirstRenderCameraReset()
  #FileName=['/home/ubuntu/elle-daniel/myExperiments/testDir/my_experiment034.csv', 
  #'/home/ubuntu/elle-daniel/myExperiments/testDir/my_experiment035.csv', 
  #'/home/ubuntu/elle-daniel/myExperiments/testDir/my_experiment036.csv'])
-FileName=glob.glob("*.csv")
-my_experiment02 = CSVReader(registrationName='*', FileName=glob.glob("*.csv"))
+FileName=sorted(glob.glob("*.csv"))
+my_experiment02 = CSVReader(registrationName='*', FileName=FileName)
 my_experiment02.DetectNumericColumns = 1
 my_experiment02.UseStringDelimiter = 1
 my_experiment02.HaveHeaders = 1
@@ -81,6 +81,9 @@ tableToPoints1.XColumn = 'x coord'
 tableToPoints1.YColumn = 'y coord'
 tableToPoints1.ZColumn = 'z coord'
 
+# set the background to white
+LoadPalette(paletteName='WhiteBackground')
+
 # show data in view
 tableToPoints1Display = Show(tableToPoints1, renderView1, 'GeometryRepresentation')
 
@@ -138,84 +141,155 @@ tableToPoints1Display.UseShaderReplacements = 0
 tableToPoints1Display.ShaderReplacements = ''
 tableToPoints1Display.NonlinearSubdivisionLevel = 1
 tableToPoints1Display.UseDataPartitions = 0
+
 tableToPoints1Display.OSPRayUseScaleArray = 'All Approximate'
+
 tableToPoints1Display.OSPRayScaleArray = 'Fractures'
+
 tableToPoints1Display.OSPRayScaleFunction = 'PiecewiseFunction'
+
 tableToPoints1Display.OSPRayMaterial = 'None'
+
 tableToPoints1Display.Orient = 0
+
 tableToPoints1Display.OrientationMode = 'Direction'
+
 tableToPoints1Display.SelectOrientationVectors = 'None'
+
 tableToPoints1Display.Scaling = 0
+
 tableToPoints1Display.ScaleMode = 'No Data Scaling Off'
+
 tableToPoints1Display.ScaleFactor = 0.09975
+
 tableToPoints1Display.SelectScaleArray = 'Fractures'
+
 tableToPoints1Display.GlyphType = 'Arrow'
+
 tableToPoints1Display.UseGlyphTable = 0
+
 tableToPoints1Display.GlyphTableIndexArray = 'Fractures'
+
 tableToPoints1Display.UseCompositeGlyphTable = 0
+
 tableToPoints1Display.UseGlyphCullingAndLOD = 0
+
 tableToPoints1Display.LODValues = []
+
 tableToPoints1Display.ColorByLODIndex = 0
+
 tableToPoints1Display.GaussianRadius = 0.004987500000000001
+
 tableToPoints1Display.ShaderPreset = 'Sphere'
+
 tableToPoints1Display.CustomTriangleScale = 3
+
 tableToPoints1Display.CustomShader = """ // This custom shader code define a gaussian blur
- // Please take a look into vtkSMPointGaussianRepresentation.cxx
- // for other custom shader examples
- //VTK::Color::Impl
-   float dist2 = dot(offsetVCVSOutput.xy,offsetVCVSOutput.xy);
-   float gaussian = exp(-0.5*dist2);
-   opacity = opacity*gaussian;
+
+// Please take a look into vtkSMPointGaussianRepresentation.cxx
+
+// for other custom shader examples
+
+//VTK::Color::Impl
+
+float dist2 = dot(offsetVCVSOutput.xy,offsetVCVSOutput.xy);
+
+float gaussian = exp(-0.5*dist2);
+
+opacity = opacity*gaussian;
+
 """
+
 tableToPoints1Display.Emissive = 0
+
 tableToPoints1Display.ScaleByArray = 0
+
 tableToPoints1Display.SetScaleArray = ['POINTS', 'Fractures']
+
 tableToPoints1Display.ScaleArrayComponent = ''
+
 tableToPoints1Display.UseScaleFunction = 1
+
 tableToPoints1Display.ScaleTransferFunction = 'PiecewiseFunction'
+
 tableToPoints1Display.OpacityByArray = 0
+
 tableToPoints1Display.OpacityArray = ['POINTS', 'Fractures']
+
 tableToPoints1Display.OpacityArrayComponent = ''
+
 tableToPoints1Display.OpacityTransferFunction = 'PiecewiseFunction'
+
 tableToPoints1Display.DataAxesGrid = 'GridAxesRepresentation'
+
 tableToPoints1Display.SelectionCellLabelBold = 0
+
 tableToPoints1Display.SelectionCellLabelColor = [0.0, 1.0, 0.0]
+
 tableToPoints1Display.SelectionCellLabelFontFamily = 'Arial'
+
 tableToPoints1Display.SelectionCellLabelFontFile = ''
+
 tableToPoints1Display.SelectionCellLabelFontSize = 18
+
 tableToPoints1Display.SelectionCellLabelItalic = 0
+
 tableToPoints1Display.SelectionCellLabelJustification = 'Left'
+
 tableToPoints1Display.SelectionCellLabelOpacity = 1.0
+
 tableToPoints1Display.SelectionCellLabelShadow = 0
+
 tableToPoints1Display.SelectionPointLabelBold = 0
+
 tableToPoints1Display.SelectionPointLabelColor = [1.0, 1.0, 0.0]
+
 tableToPoints1Display.SelectionPointLabelFontFamily = 'Arial'
+
 tableToPoints1Display.SelectionPointLabelFontFile = ''
+
 tableToPoints1Display.SelectionPointLabelFontSize = 18
+
 tableToPoints1Display.SelectionPointLabelItalic = 0
+
 tableToPoints1Display.SelectionPointLabelJustification = 'Left'
+
 tableToPoints1Display.SelectionPointLabelOpacity = 1.0
+
 tableToPoints1Display.SelectionPointLabelShadow = 0
+
 tableToPoints1Display.PolarAxes = 'PolarAxesRepresentation'
 
 # init the 'PiecewiseFunction' selected for 'OSPRayScaleFunction'
+
 tableToPoints1Display.OSPRayScaleFunction.Points = [0.0, 0.0, 0.5, 0.0, 1.0, 1.0, 0.5, 0.0]
+
 tableToPoints1Display.OSPRayScaleFunction.UseLogScale = 0
 
 # init the 'Arrow' selected for 'GlyphType'
+
 tableToPoints1Display.GlyphType.TipResolution = 6
+
 tableToPoints1Display.GlyphType.TipRadius = 0.1
+
 tableToPoints1Display.GlyphType.TipLength = 0.35
+
 tableToPoints1Display.GlyphType.ShaftResolution = 6
+
 tableToPoints1Display.GlyphType.ShaftRadius = 0.03
+
 tableToPoints1Display.GlyphType.Invert = 0
 
 # init the 'PiecewiseFunction' selected for 'ScaleTransferFunction'
-tableToPoints1Display.ScaleTransferFunction.Points = [0.0, 0.0, 0.5, 0.0, 1.1757813367477812e-38, 1.0, 0.5, 0.0]
+
+tableToPoints1Display.ScaleTransferFunction.Points = [-1.0, 0.0, 0.5, 0.0, 0.0, 1.0, 0.5, 0.0]
+
 tableToPoints1Display.ScaleTransferFunction.UseLogScale = 0
 
 # init the 'PiecewiseFunction' selected for 'OpacityTransferFunction'
-tableToPoints1Display.OpacityTransferFunction.Points = [0.0, 0.0, 0.5, 0.0, 1.1757813367477812e-38, 1.0, 0.5, 0.0]
+
+tableToPoints1Display.OpacityTransferFunction.Points = [-1.0, 0.0, 0.5, 0.0, 0.0, 1.0, 0.5, 0.0]
+
 tableToPoints1Display.OpacityTransferFunction.UseLogScale = 0
 
 # init the 'GridAxesRepresentation' selected for 'DataAxesGrid'
@@ -288,6 +362,7 @@ tableToPoints1Display.DataAxesGrid.UseCustomBounds = 0
 tableToPoints1Display.DataAxesGrid.CustomBounds = [0.0, 1.0, 0.0, 1.0, 0.0, 1.0]
 
 # init the 'PolarAxesRepresentation' selected for 'PolarAxes'
+
 tableToPoints1Display.PolarAxes.Visibility = 0
 tableToPoints1Display.PolarAxes.Translation = [0.0, 0.0, 0.0]
 tableToPoints1Display.PolarAxes.Scale = [1.0, 1.0, 1.0]
@@ -384,19 +459,11 @@ tableToPoints1Display.PolarAxes.UseLogAxis = 0
 
 # reset view to fit data
 renderView1.ResetCamera()
-
-#changing interaction mode based on data extents
-renderView1.InteractionMode = '2D'
-renderView1.CameraPosition = [0.49875, 0.496315801, 10000.0]
-renderView1.CameraFocalPoint = [0.49875, 0.496315801, 0.0]
-
 # get the material library
 materialLibrary1 = GetMaterialLibrary()
 
 # update the view to ensure updated data information
 renderView1.Update()
-
-LoadPalette(paletteName='WhiteBackground')
 
 # set scalar coloring
 ColorBy(tableToPoints1Display, ('POINTS', 'Fractures'))
@@ -405,7 +472,8 @@ ColorBy(tableToPoints1Display, ('POINTS', 'Fractures'))
 tableToPoints1Display.RescaleTransferFunctionToDataRange(True, False)
 
 # show color bar/color legend
-tableToPoints1Display.SetScalarBarVisibility(renderView1, True)
+tableToPoints1Display.SetScalarBarVisibility(renderView1, False)
+
 
 # get color transfer function/color map for 'Fractures'
 fracturesLUT = GetColorTransferFunction('Fractures')
@@ -415,7 +483,7 @@ fracturesLUT.AnnotationsInitialized = 0
 fracturesLUT.ShowCategoricalColorsinDataRangeOnly = 0
 fracturesLUT.RescaleOnVisibilityChange = 0
 fracturesLUT.EnableOpacityMapping = 0
-fracturesLUT.RGBPoints = [0.0, 0.231373, 0.298039, 0.752941, 5.878906683738906e-39, 0.865003, 0.865003, 0.865003, 1.1757813367477812e-38, 0.705882, 0.0156863, 0.14902]
+fracturesLUT.RGBPoints = [-1.0, 0.231373, 0.298039, 0.752941, -0.5, 0.865003, 0.865003, 0.865003, 0.0, 0.705882, 0.0156863, 0.14902]
 fracturesLUT.UseLogScale = 0
 fracturesLUT.UseOpacityControlPointsFreehandDrawing = 0
 fracturesLUT.ShowDataHistogram = 0
@@ -442,68 +510,20 @@ fracturesLUT.IndexedOpacities = []
 
 # get opacity transfer function/opacity map for 'Fractures'
 fracturesPWF = GetOpacityTransferFunction('Fractures')
-fracturesPWF.Points = [0.0, 0.0, 0.5, 0.0, 1.1757813367477812e-38, 1.0, 0.5, 0.0]
+fracturesPWF.Points = [-1.0, 0.0, 0.5, 0.0, 0.0, 1.0, 0.5, 0.0]
 fracturesPWF.AllowDuplicateScalars = 1
 fracturesPWF.UseLogScale = 0
 fracturesPWF.ScalarRangeInitialized = 1
 
-# get color legend/bar for fracturesLUT in view renderView1
-fracturesLUTColorBar = GetScalarBar(fracturesLUT, renderView1)
-fracturesLUTColorBar.AutoOrient = 1
-fracturesLUTColorBar.Orientation = 'Vertical'
-fracturesLUTColorBar.WindowLocation = 'LowerRightCorner'
-fracturesLUTColorBar.Position = [0.89, 0.02]
-fracturesLUTColorBar.Title = 'Fractures'
-fracturesLUTColorBar.ComponentTitle = ''
-fracturesLUTColorBar.TitleJustification = 'Centered'
-fracturesLUTColorBar.HorizontalTitle = 0
-fracturesLUTColorBar.TitleOpacity = 1.0
-fracturesLUTColorBar.TitleFontFamily = 'Arial'
-fracturesLUTColorBar.TitleFontFile = ''
-fracturesLUTColorBar.TitleBold = 0
-fracturesLUTColorBar.TitleItalic = 0
-fracturesLUTColorBar.TitleShadow = 0
-fracturesLUTColorBar.TitleFontSize = 16
-fracturesLUTColorBar.LabelOpacity = 1.0
-fracturesLUTColorBar.LabelFontFamily = 'Arial'
-fracturesLUTColorBar.LabelFontFile = ''
-fracturesLUTColorBar.LabelBold = 0
-fracturesLUTColorBar.LabelItalic = 0
-fracturesLUTColorBar.LabelShadow = 0
-fracturesLUTColorBar.LabelFontSize = 16
-fracturesLUTColorBar.AutomaticLabelFormat = 1
-fracturesLUTColorBar.LabelFormat = '%-#6.3g'
-fracturesLUTColorBar.DrawTickMarks = 1
-fracturesLUTColorBar.DrawTickLabels = 1
-fracturesLUTColorBar.UseCustomLabels = 0
-fracturesLUTColorBar.CustomLabels = []
-fracturesLUTColorBar.AddRangeLabels = 1
-fracturesLUTColorBar.RangeLabelFormat = '%-#6.1e'
-fracturesLUTColorBar.DrawAnnotations = 1
-fracturesLUTColorBar.AddRangeAnnotations = 0
-fracturesLUTColorBar.AutomaticAnnotations = 0
-fracturesLUTColorBar.DrawNanAnnotation = 0
-fracturesLUTColorBar.NanAnnotation = 'NaN'
-fracturesLUTColorBar.TextPosition = 'Ticks right/top, annotations left/bottom'
-fracturesLUTColorBar.ReverseLegend = 0
-fracturesLUTColorBar.ScalarBarThickness = 16
-fracturesLUTColorBar.ScalarBarLength = 0.33
-
-# change scalar bar placement
-fracturesLUTColorBar.WindowLocation = 'AnyLocation'
-fracturesLUTColorBar.Position = [0.7654320987654321, 0.3598484848484848]
-
-# hide color bar/color legend
-tableToPoints1Display.SetScalarBarVisibility(renderView1, False)
-
 # layout/tab size in pixels
 #layout1.SetSize(972, 528)
+
 # # set the view size: (important so that the colorbar has a reasonable size)
 renderView1.ViewSize=[971, 528]
 
 # current camera placement for renderView1
 renderView1.InteractionMode = '2D'
-renderView1.CameraPosition = [0.49875, 0.496315801, 10000.0]
+renderView1.CameraPosition = [0.49875, 0.496315801, 2.712704029172661]
 renderView1.CameraFocalPoint = [0.49875, 0.496315801, 0.0]
 renderView1.CameraParallelScale = 0.7020994664762287
 
@@ -518,7 +538,11 @@ SaveAnimation('fractures.png', renderView1, ImageResolution=[972, 528],
     # PNG options
     CompressionLevel='5',
     SuffixFormat='.%04d')
-
+'''
+=============================================
+-------------- END OF FRACTURES -------------
+=============================================
+'''
 # set scalar coloring
 ColorBy(tableToPoints1Display, ('POINTS', 'Porosity'))
 

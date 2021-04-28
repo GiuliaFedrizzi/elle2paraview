@@ -1,0 +1,3 @@
+#!/bin/bash
+python3 elle2csv.py
+pvpython save-animation-from-csv.py 
