@@ -41,10 +41,11 @@ Big loop over every elle file in the current directory:
 for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle extension in the current folder, sorted by name
     if file_to_convert.startswith("res"): # EXCLUDE those that start with "res"
         continue
+    if file_to_convert.startswith("my_experiment001") or file_to_convert.startswith("my_experiment002"):
+        continue
     converted_file_name=file_to_convert.replace(".elle","") # extract the name without file extension
     # TEST: are the files already converted?
     if os.path.isfile(converted_file_name+".csv"):
-    #    os.remove(converted_file_name+".txt")
         print("File \'"+converted_file_name+ ".csv\' already exists. Exiting to avoid overwriting.")
         continue
 
@@ -113,6 +114,7 @@ for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle exte
                     poroDiffDf.columns = ["id","Porosity Variation"]  # rename column from Porosity to Porosity Variation
                     mergedDf = mergedDf.merge(poroDiffDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
                 
+            
 
         if ind==len(complete_list_of_things_to_search)-1:  # if we reached the last thing to search: stop. Don't search anymore.
             break
