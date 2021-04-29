@@ -538,6 +538,9 @@ SaveAnimation('fractures.png', renderView1, ImageResolution=[972, 528],
     # PNG options
     CompressionLevel='5',
     SuffixFormat='.%04d')
+# save animation VIDEO
+SaveAnimation('fracturesVideo.avi', renderView1, ImageResolution=[972, 528],
+    FrameWindow=[0, len(FileName)])
 '''
 =============================================
 -------------- END OF FRACTURES -------------
@@ -663,6 +666,16 @@ SaveAnimation('porosity-variation.png', renderView1, ImageResolution=[972, 528],
     CompressionLevel='5',
     SuffixFormat='.%04d')
 
+# save animation VIDEO
+SaveAnimation('porosityVideo.avi', renderView1, ImageResolution=[972, 528],
+    FrameWindow=[0, len(FileName)])
+
+'''
+===========================
+------END OF POROSITY------
+===========================
+'''
+
 # set scalar coloring
 ColorBy(tableToPoints1Display, ('POINTS', 'Pressure'))
 
@@ -782,6 +795,10 @@ SaveAnimation('pressure.png', renderView1, ImageResolution=[972, 528],
     # PNG options
     CompressionLevel='5',
     SuffixFormat='.%04d')
+
+# save animation VIDEO
+SaveAnimation('pressureVideo.avi', renderView1, ImageResolution=[972, 528],
+    FrameWindow=[0, len(FileName)])
 
 #================================================================
 # addendum: following script captures some of the application
