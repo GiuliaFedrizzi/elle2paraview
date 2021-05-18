@@ -527,19 +527,9 @@ renderView1.CameraPosition = [0.49875, 0.496315801, 2.712704029172661]
 renderView1.CameraFocalPoint = [0.49875, 0.496315801, 0.0]
 renderView1.CameraParallelScale = 0.7020994664762287
 
-# save animation
-SaveAnimation('fractures.png', renderView1, ImageResolution=[972, 528],
-    FontScaling='Scale fonts proportionally',
-    OverrideColorPalette='',
-    StereoMode='No change',
-    TransparentBackground=0,
-    FrameRate=1,
-    FrameWindow=[0, len(FileName)], 
-    # PNG options
-    CompressionLevel='5',
-    SuffixFormat='.%04d')
 # save animation VIDEO
-# SaveAnimation('fracturesVideo.avi', renderView1, ImageResolution=[972, 528],    FrameWindow=[0, len(FileName)])
+SaveAnimation('fracturesVideo.avi', renderView1, ImageResolution=[972, 528],
+    FrameRate=1,FrameWindow=[0, len(FileName)])
 '''
 =============================================
 -------------- END OF FRACTURES -------------
@@ -653,20 +643,9 @@ renderView1.CameraPosition = [0.49875, 0.496315801, 10000.0]
 renderView1.CameraFocalPoint = [0.49875, 0.496315801, 0.0]
 renderView1.CameraParallelScale = 0.7020994664762287
 
-# save animation
-SaveAnimation('porosity-variation.png', renderView1, ImageResolution=[972, 528],
-    FontScaling='Scale fonts proportionally',
-    OverrideColorPalette='',
-    StereoMode='No change',
-    TransparentBackground=0,
-    FrameRate=1,
-    FrameWindow=[0, len(FileName)], 
-    # PNG options
-    CompressionLevel='5',
-    SuffixFormat='.%04d')
-
 # save animation VIDEO
-#SaveAnimation('porosityVideo.avi', renderView1, ImageResolution=[972, 528],    FrameWindow=[0, len(FileName)])
+SaveAnimation('porosityVideo.avi', renderView1, ImageResolution=[972, 528],
+    FrameRate=1,FrameWindow=[0, len(FileName)])
 
 '''
 ===========================
@@ -782,20 +761,10 @@ renderView1.CameraPosition = [0.49875, 0.496315801, 10000.0]
 renderView1.CameraFocalPoint = [0.49875, 0.496315801, 0.0]
 renderView1.CameraParallelScale = 0.7020994664762287
 
-# save animation
-SaveAnimation('pressure.png', renderView1, ImageResolution=[972, 528],
-    FontScaling='Scale fonts proportionally',
-    OverrideColorPalette='',
-    StereoMode='No change',
-    TransparentBackground=0,
-    FrameRate=1,
-    FrameWindow=[0, len(FileName)], 
-    # PNG options
-    CompressionLevel='5',
-    SuffixFormat='.%04d')
 
 # save animation VIDEO
-#SaveAnimation('pressureVideo.avi', renderView1, ImageResolution=[972, 528], FrameWindow=[0, len(FileName)])
+SaveAnimation('pressureVideo.avi', renderView1, ImageResolution=[972, 528],
+    FrameRate=1,FrameWindow=[0, len(FileName)])
 
 #================================================================
 # addendum: following script captures some of the application
