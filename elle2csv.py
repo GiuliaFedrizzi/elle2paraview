@@ -53,7 +53,7 @@ for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle exte
     # what I need to find in the elle file: every couple is the start and the end of the section I need to save. 
     #e.g. from "UNODES" to "CONC_A" means I am going to save all the lines after "LOCATION" until "CONC_A".
     for ind,section in enumerate(complete_list_of_things_to_search):   # ind is the index, section is the name of the section (e.g. "LOCATION")
-        if section in ["UNODES", "U_FRACTURES", "U_TEMPERATURE","U_DENSITY","U_YOUNGSMODULUS","U_DISLOCDEN"]:        # sections we want to save
+        if section in ["UNODES", "U_FRACTURES", "U_TEMPERATURE","U_DENSITY","U_YOUNGSMODULUS","U_DISLOCDEN","U_DIF_STRESS","U_MEAN_STRESS"]:        # sections we want to save
             things_to_search=complete_list_of_things_to_search[ind:ind+2]  # search for this section and the next (start and stop of the search process)
             lines_list=[] # initialising some useful variables
             for x in things_to_search:    # now things_to_search changes every time with every 'section'
@@ -67,46 +67,56 @@ for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle exte
             # RUN SAVE RIGHT LINES
             convertedDf = save_the_right_lines(file_to_convert,section) # run function with input: elle file and section to save
             # --------------------------
-            
-            # Create a dataframe for each section, assign the correct header and merge it with the previous one
-            if section == "UNODES":     # needs to assign headers: x,y,z
-                #myDf = pd.read_csv(converted_file_name+".txt",delim_whitespace=True,header=None) # create pandas dataframe
-                myDf = convertedDf
-                myDf.columns = ["id","x coord", "y coord"] # assign headers
-                myDf['z coord'] = 0       # add a third column for the z coordinate (set to 0, we are in 2D)
-                myDf["id"]=myDf["id"].astype('int64',errors='raise') # need to change the type of "id" column to merge later
-
-            elif section == "U_FRACTURES":  # create a second pandas dataframe
-                #fracDf = pd.read_csv(converted_file_name+".txt",delim_whitespace=True,header=None)
-                fracDf = convertedDf
-                fracDf.columns = ["id","Fractures"] # assign headers
-                fracDf["id"]=fracDf["id"].astype('int64',copy=True,errors='raise')
-                # merge UNODES with FRACTURES based on their index ("id")
-                mergedDf = myDf.merge(fracDf,how="left",left_on="id",right_on="id")#,suffixes=["_L","_R"])  
-            elif section == "U_TEMPERATURE":
-                pressDf =convertedDf
-                pressDf.columns = ["id","Pressure"] # assign headers
-                pressDf["id"]=pressDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
-                mergedDf = mergedDf.merge(pressDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
-            elif section == "U_YOUNGSMODULUS":
-                youngsDf = convertedDf
-                youngsDf.columns = ["id","Young's Modulus"] # assign headers
-                youngsDf["id"]=youngsDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
-                mergedDf = mergedDf.merge(youngsDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
-            elif section == "U_DISLOCDEN":  # = porosity
-                poroDf = convertedDf
-                poroDf.columns = ["id","Porosity"] # assign headers
-                poroDf["id"]=poroDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
-                mergedDf = mergedDf.merge(poroDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
-            elif section == "U_DENSITY": # = counter for broken bonds
-                sectionDf = convertedDf
-                sectionDf.columns = ["id","Broken Bonds"] # assign headers
-                sectionDf["id"]=sectionDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
-                mergedDf = mergedDf.merge(sectionDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
-                
+            if convertedDf.size == 0:   #  skip empty sections
+                continue
             else:
-                raise ValueError(str(section) + " did not match any valid option")
-            
+                # Create a dataframe for each section, assign the correct header and merge it with the previous one
+                if section == "UNODES":     # needs to assign headers: x,y,z
+                    #myDf = pd.read_csv(converted_file_name+".txt",delim_whitespace=True,header=None) # create pandas dataframe
+                    myDf = convertedDf
+                    myDf.columns = ["id","x coord", "y coord"] # assign headers
+                    myDf['z coord'] = 0       # add a third column for the z coordinate (set to 0, we are in 2D)
+                    myDf["id"]=myDf["id"].astype('int64',errors='raise') # need to change the type of "id" column to merge later
+                    mergedDf = myDf
+                elif section == "U_FRACTURES":  # create a second pandas dataframe
+                    fracDf = convertedDf
+                    fracDf.columns = ["id","Fractures"] # assign headers
+                    fracDf["id"]=fracDf["id"].astype('int64',copy=True,errors='raise')
+                    # merge UNODES with FRACTURES based on their index ("id")
+                    mergedDf = myDf.merge(fracDf,how="left",left_on="id",right_on="id")#,suffixes=["_L","_R"])  
+                elif section == "U_TEMPERATURE":
+                    pressDf =convertedDf
+                    pressDf.columns = ["id","Pressure"] # assign headers
+                    pressDf["id"]=pressDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
+                    mergedDf = mergedDf.merge(pressDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
+                elif section == "U_YOUNGSMODULUS":
+                    youngsDf = convertedDf
+                    youngsDf.columns = ["id","Young's Modulus"] # assign headers
+                    youngsDf["id"]=youngsDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
+                    mergedDf = mergedDf.merge(youngsDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
+                elif section == "U_DISLOCDEN":  # = porosity
+                    poroDf = convertedDf
+                    poroDf.columns = ["id","Porosity"] # assign headers
+                    poroDf["id"]=poroDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
+                    mergedDf = mergedDf.merge(poroDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
+                elif section == "U_DENSITY": # = counter for broken bonds
+                    sectionDf = convertedDf
+                    sectionDf.columns = ["id","Broken Bonds"] # assign headers
+                    sectionDf["id"]=sectionDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
+                    mergedDf = mergedDf.merge(sectionDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
+                elif section == "U_DIF_STRESS":
+                    sectionDf = convertedDf
+                    sectionDf.columns = ["id","U_DIF_STRESS"] # assign headers
+                    sectionDf["id"]=sectionDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
+                    mergedDf = mergedDf.merge(sectionDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
+                elif section == "U_MEAN_STRESS":
+                    sectionDf = convertedDf
+                    sectionDf.columns = ["id","Solid Pressure"] # assign headers
+                    sectionDf["id"]=sectionDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
+                    mergedDf = mergedDf.merge(sectionDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
+                else:
+                    raise ValueError(str(section) + " did not match any valid option")
+                
 
         if ind==len(complete_list_of_things_to_search)-1:  # if we reached the last thing to search: stop. Don't search anymore.
             break
