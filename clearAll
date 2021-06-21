@@ -1,3 +1,5 @@
 rm my_exp*
 rm *.csv
 rm *.png
+rm Rate.txt
+rm latte.log
