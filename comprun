@@ -3,30 +3,11 @@
 set -e 
 set -o pipefail
 
-./clearAll || true
-
-# copy the files that could have been modified
-cp /home/ubuntu/elle-daniel/elle/processes/latte/experiment.cc .
-cp /home/ubuntu/elle-daniel/elle/processes/latte/fluid_lattice.cc .
-cp /home/ubuntu/elle-daniel/elle/processes/latte/lattice.cc .
-
 # compile
 ( cd /home/ubuntu/elle-daniel/elle/processes/latte ; /home/ubuntu/elle-daniel/elle/processes/latte/compileMe ) > compile.log
 
 # run latte
-/home/ubuntu/elle-daniel/elle/binwx/elle_latte -i res200.elle -n -u 27 3000.0 50 5 2.0 8.0  -s 3 -f 1 > latte.log 
-
-# userdata
-# [0] = process
-# [1] = solid density
-# [2] = melt frequency
-# [3] = meltPoints
-# [4] = rad_frac
-# [5] = porosity distribution
-
-# options:
-#   -f x : to save every x steps
-#   -n   : to run with no user interface
+./runMe
 
 # convert files
 #elle2csv

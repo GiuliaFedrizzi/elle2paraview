@@ -1,5 +1,1 @@
-rm my_exp*
-rm *.csv
-rm *.png
-rm Rate.txt
-rm latte.log
+rm -f my_exp* *.csv *.png Rate.txt latte.log 
