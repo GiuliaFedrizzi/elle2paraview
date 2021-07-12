@@ -2,3 +2,6 @@ runMe
 copyUtilities
 res200.elle
 comprun
+*.elle
+*.csv
+.vscode/

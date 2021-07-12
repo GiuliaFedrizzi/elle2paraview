@@ -33,6 +33,16 @@ def save_the_right_lines(file_name,section):
     dFconverted = pd.read_csv(file_name,skiprows=minimumLine, nrows=rangeLines,delim_whitespace=True,header=None) # to do : add string_to_search as header
     return(dFconverted)
 
+def porosityDiff(oldfile,idName,mergedDf):
+    poroDiffDf = pd.read_csv(oldfile,delimiter=',',usecols=["id","Porosity"])  # get the porosity values from old file
+    poroDiffDf["Porosity"] = mergedDf["Porosity"] - poroDiffDf["Porosity"] # dataframe with difference in porosity from initial porosity distribution
+    poroDiffDf.columns = ["id",idName]  # rename column from Porosity to Porosity Variation
+    mergedDf = mergedDf.merge(poroDiffDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
+    return mergedDf
+    
+    
+
+count=0; first_file=''
 """
 Big loop over every elle file in the current directory:
 """
@@ -44,8 +54,14 @@ for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle exte
     converted_file_name=file_to_convert.replace(".elle","") # extract the name without file extension
     # TEST: are the files already converted?
     if os.path.isfile(converted_file_name+".csv"):
-        print("File \'"+converted_file_name+ ".csv\' already exists. Exiting to avoid overwriting.")
+        print("File \'"+converted_file_name+ ".csv\' already exists. Exiting.")
+        if count == 0:
+            first_file = converted_file_name+".csv"
+            
+        count +=1
+        prev_file = converted_file_name+".csv"
         continue
+    print(first_file+" is my first file, "+prev_file+" is my previous")
 
     print("Converting "+str(file_to_convert)) # letting know which file is being opened
 
@@ -53,7 +69,7 @@ for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle exte
     # what I need to find in the elle file: every couple is the start and the end of the section I need to save. 
     #e.g. from "UNODES" to "CONC_A" means I am going to save all the lines after "LOCATION" until "CONC_A".
     for ind,section in enumerate(complete_list_of_things_to_search):   # ind is the index, section is the name of the section (e.g. "LOCATION")
-        if section in ["UNODES", "U_FRACTURES", "U_TEMPERATURE","U_DENSITY","U_YOUNGSMODULUS","U_DISLOCDEN","U_MEAN_STRESS","U_ENERGY","U_ATTRIB_B"]:        # sections we want to save
+        if section in ["UNODES", "U_FRACTURES", "U_TEMPERATURE","U_DENSITY","U_YOUNGSMODULUS","U_DISLOCDEN","U_ENERGY","U_ATTRIB_B"]:        # sections we want to save
             things_to_search=complete_list_of_things_to_search[ind:ind+2]  # search for this section and the next (start and stop of the search process)
             lines_list=[] # initialising some useful variables
             for x in things_to_search:    # now things_to_search changes every time with every 'section'
@@ -68,7 +84,7 @@ for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle exte
             convertedDf = save_the_right_lines(file_to_convert,section) # run function with input: elle file and section to save
             # --------------------------
             if convertedDf.size == 0 and section != "U_FRACTURES" and section != "U_DENSITY":   #  skip empty sections, except for fractures
-                print("Empty section: "+section)
+                print("WARNING! Empty section: "+section)
                 continue
             else:
                 # Create a dataframe for each section, assign the correct header and merge it with the previous one
@@ -96,10 +112,24 @@ for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle exte
                     mergedDf["Young's Modulus"] = convertedDf.iloc[:,1]
                 elif section == "U_DISLOCDEN":  # = porosity
                     mergedDf["Porosity"] = convertedDf.iloc[:,1]
-                    #if os.path.isfile('my_experiment003.csv'): # calculate difference
+
+                    # calculate difference in porosity from first file
+                    if count >0:          # if there are already csv files:
+                        if len(first_file) == 0:
+                            raise ValueError("Couldn't find the first file")
+                        # calculate difference
+                        mergedDf = porosityDiff(first_file,"Porosity Variation Global",mergedDf)
+                        # difference with previous tstep
+                        mergedDf = porosityDiff(prev_file,"Porosity Variation",mergedDf)
+                    else:
+                        mergedDf['Porosity Variation Global'] = 0   # It's useful because Paraview won't show it as an option if they are only present in a later file  
+                        mergedDf['Porosity Variation'] = 0   # It's useful because Paraview won't show it as an option if they are only present in a later file  
+                        print("This is the first file")
+                    
+                    
                 elif section == "U_DENSITY": # = counter for broken bonds
                     if convertedDf.size == 0:    # if it's empty (no fractures), add a column of zeros.
-                        mergedDf['Broken Bonds'] = 0   # It's useful because Paraview won't show it as an option if they are only avail. in a later file  
+                        mergedDf['Broken Bonds'] = 0   # It's useful because Paraview won't show it as an option if they are only present in a later file  
                     else: 
                         sectionDf = convertedDf
                         sectionDf.columns = ["id","Broken Bonds"] # assign headers
@@ -107,8 +137,8 @@ for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle exte
                         mergedDf = mergedDf.merge(sectionDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
                 #elif section == "U_DIF_STRESS":
                 #    mergedDf["U_DIF_STRESS"] = convertedDf.iloc[:,1]
-                elif section == "U_MEAN_STRESS":
-                    mergedDf["Solid Pressure"] = convertedDf.iloc[:,1]
+                #elif section == "U_MEAN_STRESS":
+                #    mergedDf["Solid Pressure"] = convertedDf.iloc[:,1]
                 elif section == "U_ENERGY":
                     mergedDf["Y Velocity"] = convertedDf.iloc[:,1]
                 elif section == "U_ATTRIB_B":
@@ -122,3 +152,8 @@ for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle exte
     # save the csv file
     mergedDf.to_csv(converted_file_name+".csv",index=False)
     print(converted_file_name+".csv created")
+    if count == 0:
+        first_file = converted_file_name+".csv"
+        count +=1
+    prev_file = converted_file_name+".csv"
+    
