@@ -61,15 +61,13 @@ for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle exte
         count +=1
         prev_file = converted_file_name+".csv"
         continue
-    print(first_file+" is my first file, "+prev_file+" is my previous")
-
     print("Converting "+str(file_to_convert)) # letting know which file is being opened
 
     complete_list_of_things_to_search=["LOCATION","UNODES","CONC_A","U_FRACTURES","U_PHASE","U_TEMPERATURE","U_DIF_STRESS","U_MEAN_STRESS","U_DENSITY","U_YOUNGSMODULUS","U_ENERGY","U_DISLOCDEN","U_VISCOSITY","U_ATTRIB_A","U_ATTRIB_B","U_ATTRIB_C"]
     # what I need to find in the elle file: every couple is the start and the end of the section I need to save. 
     #e.g. from "UNODES" to "CONC_A" means I am going to save all the lines after "LOCATION" until "CONC_A".
     for ind,section in enumerate(complete_list_of_things_to_search):   # ind is the index, section is the name of the section (e.g. "LOCATION")
-        if section in ["UNODES", "U_FRACTURES", "U_TEMPERATURE","U_DENSITY","U_YOUNGSMODULUS","U_DISLOCDEN","U_ENERGY","U_ATTRIB_B"]:        # sections we want to save
+        if section in ["UNODES", "U_FRACTURES", "U_TEMPERATURE","U_DENSITY","U_YOUNGSMODULUS","U_DISLOCDEN","U_VISCOSITY","U_ENERGY","U_ATTRIB_B"]:        # sections we want to save
             things_to_search=complete_list_of_things_to_search[ind:ind+2]  # search for this section and the next (start and stop of the search process)
             lines_list=[] # initialising some useful variables
             for x in things_to_search:    # now things_to_search changes every time with every 'section'
@@ -130,11 +128,10 @@ for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle exte
                 elif section == "U_DENSITY": # = counter for broken bonds
                     if convertedDf.size == 0:    # if it's empty (no fractures), add a column of zeros.
                         mergedDf['Broken Bonds'] = 0   # It's useful because Paraview won't show it as an option if they are only present in a later file  
-                    else: 
-                        sectionDf = convertedDf
-                        sectionDf.columns = ["id","Broken Bonds"] # assign headers
-                        sectionDf["id"]=sectionDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
-                        mergedDf = mergedDf.merge(sectionDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
+                    else:
+                        convertedDf.columns = ["id","Broken Bonds"] # assign headers
+                        convertedDf["id"]=convertedDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
+                        mergedDf = mergedDf.merge(convertedDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
                 #elif section == "U_DIF_STRESS":
                 #    mergedDf["U_DIF_STRESS"] = convertedDf.iloc[:,1]
                 #elif section == "U_MEAN_STRESS":
@@ -143,6 +140,10 @@ for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle exte
                     mergedDf["Y Velocity"] = convertedDf.iloc[:,1]
                 elif section == "U_ATTRIB_B":
                     mergedDf["Permeability"] = convertedDf.iloc[:,1]
+                elif section == "U_VISCOSITY":
+                    convertedDf.columns = ["id","Healing"] # assign headers
+                    convertedDf["id"]=convertedDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
+                    mergedDf = mergedDf.merge(convertedDf,how="left",left_on="id",right_on="id").fillna(1) # merge with previous dataframe
                 else:
                     raise ValueError(str(section) + " did not match any valid option")
                 
