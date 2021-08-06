@@ -61,7 +61,7 @@ for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle exte
         count +=1
         prev_file = converted_file_name+".csv"
         continue
-    print("Converting "+str(file_to_convert)) # letting know which file is being opened
+    print("Converting "+str(file_to_convert)+"...") # letting know which file is being opened
 
     complete_list_of_things_to_search=["LOCATION","UNODES","CONC_A","U_FRACTURES","U_PHASE","U_TEMPERATURE","U_DIF_STRESS","U_MEAN_STRESS","U_DENSITY","U_YOUNGSMODULUS","U_ENERGY","U_DISLOCDEN","U_VISCOSITY","U_ATTRIB_A","U_ATTRIB_B","U_ATTRIB_C"]
     # what I need to find in the elle file: every couple is the start and the end of the section I need to save. 
