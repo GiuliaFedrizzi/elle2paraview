@@ -88,11 +88,11 @@ for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle exte
                 # Create a dataframe for each section, assign the correct header and merge it with the previous one
                 if section == "UNODES":     # needs to assign headers: x,y,z
                     #myDf = pd.read_csv(converted_file_name+".txt",delim_whitespace=True,header=None) # create pandas dataframe
-                    myDf = convertedDf
-                    myDf.columns = ["id","x coord", "y coord"] # assign headers
-                    myDf['z coord'] = 0       # add a third column for the z coordinate (set to 0, we are in 2D)
-                    myDf["id"]=myDf["id"].astype('int64',errors='raise') # need to change the type of "id" column to merge later
-                    mergedDf = myDf
+                    mergedDf = convertedDf
+                    mergedDf.columns = ["id","x coord", "y coord"] # assign headers
+                    mergedDf['z coord'] = 0       # add a third column for the z coordinate (set to 0, we are in 2D)
+                    mergedDf["id"]=mergedDf["id"].astype('int64',errors='raise') # need to change the type of "id" column to merge later
+                    
                 elif section == "U_FRACTURES":  # create a second pandas dataframe
                     if convertedDf.size == 0:    # if it's empty (no fractures), add a column of zeros.
                         mergedDf['Fractures'] = 0   # It's useful because Paraview won't show "Fractures" as an option if they are only avail. in a later file  
@@ -101,9 +101,10 @@ for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle exte
                         fracDf = convertedDf
                         fracDf.columns = ["id","Fractures"] # assign headers
                         fracDf["id"]=fracDf["id"].astype('int64',copy=True,errors='raise')
-                        # merge UNODES with FRACTURES based on their index ("id")
-                        mergedDf = myDf.merge(fracDf,how="left",left_on="id",right_on="id")#,suffixes=["_L","_R"])  
-                        #mergedDf["Fractures"] = convertedDf.iloc[:,1]  # doesn't work
+                        #mergedDf2=mergedDf # need a second copy for merging later
+                        # merge UNODES with FRACTURES based on their index (the column called "id")
+                        mergedDf = mergedDf.merge(fracDf,how="left",left_on="id",right_on="id").fillna(0)  
+                        #mergedDf["Fractures"] = convertedDf.iloc[:,1]  # doesn't work, need to use 'merge'
                 elif section == "U_TEMPERATURE":
                     mergedDf["Pressure"] = convertedDf.iloc[:,1]
                 elif section == "U_YOUNGSMODULUS":
@@ -124,14 +125,16 @@ for file_to_convert in sorted(glob.glob("*.elle")):  # find files with elle exte
                         mergedDf['Porosity Variation'] = 0   # It's useful because Paraview won't show it as an option if they are only present in a later file  
                         print("This is the first file")
                     
-                    
                 elif section == "U_DENSITY": # = counter for broken bonds
                     if convertedDf.size == 0:    # if it's empty (no fractures), add a column of zeros.
                         mergedDf['Broken Bonds'] = 0   # It's useful because Paraview won't show it as an option if they are only present in a later file  
                     else:
-                        convertedDf.columns = ["id","Broken Bonds"] # assign headers
-                        convertedDf["id"]=convertedDf["id"].astype('int64',copy=True,errors='raise') # need to change the type in order to merge by id
-                        mergedDf = mergedDf.merge(convertedDf,how="left",left_on="id",right_on="id") # merge with previous dataframe
+                        BrDb = convertedDf
+                        BrDb.columns = ["id","Broken Bonds"] # assign headers
+                        BrDb["id"]=BrDb["id"].astype('int64',copy=True,errors='raise')
+                        # merge with old dataframe based on their index (the column called "id")
+                        mergedDf = mergedDf.merge(BrDb,how="left",left_on="id",right_on="id").fillna(0)
+                        
                 #elif section == "U_DIF_STRESS":
                 #    mergedDf["U_DIF_STRESS"] = convertedDf.iloc[:,1]
                 #elif section == "U_MEAN_STRESS":
